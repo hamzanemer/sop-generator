@@ -1,0 +1,5 @@
+{
+  "name": "SOP Generator AI",
+  "description": "An application that uses AI to generate professional Standard Operating Procedures (SOPs) based on user input about their work activities, interactions, and tools.",
+  "requestFramePermissions": []
+}
