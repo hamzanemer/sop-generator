@@ -6,8 +6,6 @@ import { LabeledTextarea } from './components/LabeledTextarea';
 import { SopDisplay } from './components/SopDisplay';
 import { GenerateButton } from './components/GenerateButton';
 import { LabeledInput } from './components/LabeledInput';
-import { ServiceSelector, AiService } from './components/ServiceSelector';
-import { ApiHelpModal } from './components/ApiHelpModal';
 
 function App() {
   const [activities, setActivities] = useState('');
@@ -20,8 +18,6 @@ function App() {
   const [generatedSop, setGeneratedSop] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [selectedService, setSelectedService] = useState<AiService>('gemini');
-  const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
 
   const handleGenerateSop = useCallback(async () => {
     if (!activities.trim()) {
@@ -34,7 +30,7 @@ function App() {
     setGeneratedSop('');
 
     try {
-      const result = await generateSop({ activities, interactions, tools, details, lineManagerPosition, teamSize }, selectedService);
+      const result = await generateSop({ activities, interactions, tools, details, lineManagerPosition, teamSize });
       setGeneratedSop(result);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An unknown error occurred. Please try again.');
@@ -42,7 +38,7 @@ function App() {
     } finally {
       setIsLoading(false);
     }
-  }, [activities, interactions, tools, details, lineManagerPosition, teamSize, selectedService]);
+  }, [activities, interactions, tools, details, lineManagerPosition, teamSize]);
 
   return (
     <div className="min-h-screen flex flex-col font-sans text-slate-800">
@@ -101,7 +97,6 @@ function App() {
             </div>
 
             <div className="mt-8 pt-6 border-t border-slate-200 flex flex-col items-center gap-6">
-              <ServiceSelector selectedService={selectedService} onSelectService={setSelectedService} />
               <GenerateButton 
                 isLoading={isLoading} 
                 onClick={handleGenerateSop} 
@@ -113,14 +108,8 @@ function App() {
           
           <SopDisplay sopText={generatedSop} isLoading={isLoading} />
         </div>
-        <div className="text-center mt-8">
-            <button onClick={() => setIsHelpModalOpen(true)} className="text-sm text-indigo-600 hover:text-indigo-800 underline">
-                Where do I find the API Keys?
-            </button>
-        </div>
       </main>
-      <Footer selectedService={selectedService} />
-      {isHelpModalOpen && <ApiHelpModal onClose={() => setIsHelpModalOpen(false)} />}
+      <Footer />
     </div>
   );
 }
